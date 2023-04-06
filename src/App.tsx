@@ -1,9 +1,23 @@
 import { useState } from 'react';
 
-function App() {
-  const [count, setCount] = useState(0);
+import { Feature, Loading, Preview, Search, Title } from './components';
+import { Record, SearchResults } from './types/types';
 
-  return <div className='App'></div>;
+function App() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [searchResults, setSearchResults] = useState<SearchResults>({
+    info: {},
+    records: [],
+  });
+  const [featuredResult, setFeaturedResult] = useState<Record | null>(null);
+
+  return (
+    <>
+      <Title />
+      <Search setIsLoading={setIsLoading} setSearchResults={setSearchResults} />
+      {isLoading && <Loading />}
+    </>
+  );
 }
 
 export default App;
