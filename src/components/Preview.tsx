@@ -1,12 +1,10 @@
 import { fetchQueryResultsFromURL } from '../api';
 import { PreviewProps } from '../types/types';
 
-const Preview = ({
-  searchResults,
-  setIsLoading,
-  setSearchResults,
-  setFeaturedResult,
-}: PreviewProps) => {
+const Preview = (props: PreviewProps) => {
+  const { searchResults, setIsLoading, setSearchResults, setFeaturedResult } =
+    props;
+
   async function fetchPage(pageUrl: string): Promise<void> {
     setIsLoading(true);
 
