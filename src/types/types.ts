@@ -20,11 +20,9 @@ export type Record = {
   description: string;
   dimensions: string;
   division: string;
-  imagecount: number;
   images?: Image[];
   medium: string;
   people?: { displayname: string }[];
-  peoplecount: number;
   primaryimageurl?: string;
   title: string;
 };

@@ -32,7 +32,7 @@ const Feature = ({
             <span className='title'>Dimensions</span>
             <span className='content'>{featuredResult.dimensions}</span>
             <span className='title'>Person</span>
-            {featuredResult.peoplecount &&
+            {featuredResult.people &&
               featuredResult.people!.map((person, index) => (
                 <Searchable
                   key={index}
@@ -56,7 +56,7 @@ const Feature = ({
             <span className='content'>{featuredResult.creditline}</span>
           </section>
           <section className='photos'>
-            {featuredResult.imagecount &&
+            {featuredResult.images &&
               featuredResult.images!.map((image, index) => (
                 <img
                   src={image.baseimageurl}
