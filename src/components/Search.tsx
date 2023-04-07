@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useState } from 'react';
+import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 
 import {
   fetchAllCenturies,
@@ -6,11 +6,12 @@ import {
   fetchQueryResults,
 } from '../api';
 
-import { Option, SearchProps } from '../types/types';
+import { Option, Record, SearchProps } from '../types/types';
 
 const Search = (props: SearchProps) => {
   const { setIsLoading, setSearchResults } = props;
 
+  const [tempResults, setTempResults] = useState<Record[]>([]);
   const [queryString, setQueryString] = useState('');
 
   const [century, setCentury] = useState('any');
@@ -19,24 +20,24 @@ const Search = (props: SearchProps) => {
   const [classification, setClassification] = useState('any');
   const [classificationList, setClassificationList] = useState<Option[]>([]);
 
-  useEffect(() => {
-    async function getData() {
-      setIsLoading(true);
+  async function getData() {
+    setIsLoading(true);
 
-      try {
-        const newClassificationList = await fetchAllClassifications();
-        const newCenturyList = await fetchAllCenturies();
-        // console.log(newCenturyList);
-        // console.log(newClassificationList);
-        setCenturyList(newCenturyList);
-        setClassificationList(newClassificationList);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setIsLoading(false);
-      }
+    try {
+      const newClassificationList = await fetchAllClassifications();
+      const newCenturyList = await fetchAllCenturies();
+      // console.log(newCenturyList);
+      // console.log(newClassificationList);
+      setCenturyList(newCenturyList);
+      setClassificationList(newClassificationList);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
     }
+  }
 
+  useEffect(() => {
     getData();
   }, []);
 
@@ -45,19 +46,33 @@ const Search = (props: SearchProps) => {
     setIsLoading(true);
 
     try {
-      const newSearchResults = await fetchQueryResults({
-        century,
-        classification,
-        queryString,
-      });
+      const searchObj = { century, classification, queryString };
+      const result = await fetchQueryResults(searchObj);
       // console.log(newSearchResults);
-      setSearchResults(newSearchResults);
+      setSearchResults(result);
     } catch (error) {
       console.error(error);
     } finally {
       setIsLoading(false);
     }
   }
+
+  async function getSuggestion() {
+    if (!queryString) return;
+
+    try {
+      const searchObj = { century, classification, queryString };
+      const result = await fetchQueryResults(searchObj);
+      console.log(result);
+      setTempResults(result.records);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  useEffect(() => {
+    getSuggestion();
+  }, [queryString]);
 
   return (
     <form id='search' onSubmit={handleSubmit}>
@@ -70,6 +85,15 @@ const Search = (props: SearchProps) => {
           value={queryString}
           onChange={(event) => setQueryString(event.target.value)}
         />
+        {tempResults.length > 0 && (
+          <ul>
+            {tempResults.map((record, index) => (
+              <li key={index} onClick={() => setQueryString(record.title)}>
+                {record.title}
+              </li>
+            ))}
+          </ul>
+        )}
       </fieldset>
       <fieldset>
         <label htmlFor='select-classification'>
