@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 
 import {
   fetchAllCenturies,
@@ -9,8 +9,9 @@ import {
 import { Option, Record, SearchProps } from '../types/types';
 
 const Search = (props: SearchProps) => {
-  const { setIsLoading, setSearchResults } = props;
+  const { setIsLoading, setSearchResults, setFeaturedResult } = props;
 
+  const [isSearching, setIsSearching] = useState(false);
   const [tempResults, setTempResults] = useState<Record[]>([]);
   const [queryString, setQueryString] = useState('');
 
@@ -54,16 +55,17 @@ const Search = (props: SearchProps) => {
       console.error(error);
     } finally {
       setIsLoading(false);
+      setIsSearching(false);
     }
   }
 
   async function getSuggestion() {
-    if (!queryString) return;
+    if (!queryString) return setTempResults([]);
 
     try {
       const searchObj = { century, classification, queryString };
       const result = await fetchQueryResults(searchObj);
-      console.log(result);
+      // console.log(result);
       setTempResults(result.records);
     } catch (error) {
       console.error(error);
@@ -83,12 +85,22 @@ const Search = (props: SearchProps) => {
           type='text'
           placeholder='Enter Keywords...'
           value={queryString}
-          onChange={(event) => setQueryString(event.target.value)}
+          onChange={(event) => {
+            setIsSearching(true);
+            setQueryString(event.target.value);
+          }}
         />
-        {tempResults.length > 0 && (
+        {tempResults.length > 0 && isSearching && (
           <ul>
             {tempResults.map((record, index) => (
-              <li key={index} onClick={() => setQueryString(record.title)}>
+              <li
+                key={index}
+                onClick={() => {
+                  setQueryString(record.title);
+                  setFeaturedResult(record);
+                  setIsSearching(false);
+                }}
+              >
                 {record.title}
               </li>
             ))}
