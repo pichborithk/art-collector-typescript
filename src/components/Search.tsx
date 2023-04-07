@@ -38,7 +38,7 @@ const Search = ({ setIsLoading, setSearchResults }: SearchProps) => {
     getData();
   }, []);
 
-  async function handleSubmit(event: FormEvent) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setIsLoading(true);
 
@@ -48,7 +48,7 @@ const Search = ({ setIsLoading, setSearchResults }: SearchProps) => {
         classification,
         queryString,
       });
-      console.log(newSearchResults);
+      // console.log(newSearchResults);
       setSearchResults(newSearchResults);
     } catch (error) {
       console.error(error);

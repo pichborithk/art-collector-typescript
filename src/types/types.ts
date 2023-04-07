@@ -1,20 +1,23 @@
 import { Dispatch, SetStateAction } from 'react';
 
 export type SearchResults = {
-  info: Info | {};
-  records: Record[] | [];
+  info: Info;
+  records: Record[];
 };
 
 export type Info = {
-  next: string;
+  next?: string;
   prev?: string;
 };
 
 export type Record = {
   century: string;
   contact: string;
+  culture: string;
   creditline: string;
+  dated: string;
   department: string;
+  description: string;
   dimensions: string;
   division: string;
   imagecount: number;
@@ -23,6 +26,7 @@ export type Record = {
   people?: { displayname: string }[];
   peoplecount: number;
   primaryimageurl?: string;
+  title: string;
 };
 
 export type Image = {
@@ -44,4 +48,24 @@ export type fetchQueryResultsProps = {
 export type SearchProps = {
   setIsLoading: Dispatch<SetStateAction<boolean>>;
   setSearchResults: Dispatch<SetStateAction<SearchResults>>;
+};
+
+export type PreviewProps = {
+  searchResults: SearchResults;
+  setIsLoading: Dispatch<SetStateAction<boolean>>;
+  setSearchResults: Dispatch<SetStateAction<SearchResults>>;
+  setFeaturedResult: Dispatch<SetStateAction<Record | null>>;
+};
+
+export type FeatureProps = {
+  setIsLoading: Dispatch<SetStateAction<boolean>>;
+  setSearchResults: Dispatch<SetStateAction<SearchResults>>;
+  featuredResult: Record | null;
+};
+
+export type SearchableProps = {
+  setIsLoading: Dispatch<SetStateAction<boolean>>;
+  setSearchResults: Dispatch<SetStateAction<SearchResults>>;
+  searchTerm: string;
+  searchValue: string;
 };
