@@ -33,11 +33,11 @@ export async function fetchAllCenturies(): Promise<Option[]> {
   return records;
 }
 
-export async function fetchQueryResults({
-  century,
-  classification,
-  queryString,
-}: fetchQueryResultsProps): Promise<SearchResults> {
+export async function fetchQueryResults(
+  searchObj: fetchQueryResultsProps
+): Promise<SearchResults> {
+  const { century, classification, queryString } = searchObj;
+
   const url = `${BASE_URL}/object?${KEY}&classification=${classification}&century=${century}&keyword=${queryString}`;
 
   const response = await fetch(url);

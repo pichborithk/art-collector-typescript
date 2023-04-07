@@ -8,7 +8,9 @@ import {
 
 import { Option, SearchProps } from '../types/types';
 
-const Search = ({ setIsLoading, setSearchResults }: SearchProps) => {
+const Search = (props: SearchProps) => {
+  const { setIsLoading, setSearchResults } = props;
+
   const [queryString, setQueryString] = useState('');
 
   const [century, setCentury] = useState('any');

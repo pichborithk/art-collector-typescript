@@ -3,12 +3,9 @@ import { MouseEvent } from 'react';
 import { fetchQueryResultsFromTermAndValue } from '../api';
 import { SearchableProps } from '../types/types';
 
-const Searchable = ({
-  setIsLoading,
-  searchTerm,
-  searchValue,
-  setSearchResults,
-}: SearchableProps) => {
+const Searchable = (props: SearchableProps) => {
+  const { setIsLoading, searchTerm, searchValue, setSearchResults } = props;
+
   async function handleSearch(
     event: MouseEvent<HTMLAnchorElement>
   ): Promise<void> {

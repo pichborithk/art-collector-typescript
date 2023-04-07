@@ -1,11 +1,9 @@
 import Searchable from './Searchable';
 import { FeatureProps } from '../types/types';
 
-const Feature = ({
-  featuredResult,
-  setIsLoading,
-  setSearchResults,
-}: FeatureProps) => {
+const Feature = (props: FeatureProps) => {
+  const { featuredResult, setIsLoading, setSearchResults } = props;
+
   return (
     <main id='feature'>
       {featuredResult && (
