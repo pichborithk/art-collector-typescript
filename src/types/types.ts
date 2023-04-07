@@ -46,6 +46,7 @@ export type fetchQueryResultsProps = {
 export type SearchProps = {
   setIsLoading: Dispatch<SetStateAction<boolean>>;
   setSearchResults: Dispatch<SetStateAction<SearchResults>>;
+  setFeaturedResult: Dispatch<SetStateAction<Record | null>>;
 };
 
 export type PreviewProps = {

@@ -14,7 +14,11 @@ function App() {
   return (
     <>
       <Title />
-      <Search setIsLoading={setIsLoading} setSearchResults={setSearchResults} />
+      <Search
+        setIsLoading={setIsLoading}
+        setSearchResults={setSearchResults}
+        setFeaturedResult={setFeaturedResult}
+      />
       <Preview
         searchResults={searchResults}
         setIsLoading={setIsLoading}

@@ -91,6 +91,8 @@
       li {
         padding: 4px 8px;
 
+        cursor: pointer;
+
         &:nth-of-type(odd) {
           background-color: #ededed;
         }
