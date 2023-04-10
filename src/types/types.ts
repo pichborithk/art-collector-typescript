@@ -37,10 +37,11 @@ export type Option = {
   name: string;
 };
 
-export type fetchQueryResultsProps = {
+export type fetchQueryResultsArgs = {
   century: string;
   classification: string;
   queryString: string;
+  culture: string;
 };
 
 export type SearchProps = {
