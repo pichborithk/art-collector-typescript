@@ -1,4 +1,4 @@
-import { Option, SearchResults, fetchQueryResultsProps } from '../types/types';
+import { Option, SearchResults, fetchQueryResultsArgs } from '../types/types';
 
 export const BASE_URL = 'https://api.harvardartmuseums.org';
 export const KEY = `apikey=${import.meta.env.VITE_API_KEY}`;
@@ -33,12 +33,27 @@ export async function fetchAllCenturies(): Promise<Option[]> {
   return records;
 }
 
-export async function fetchQueryResults(
-  searchObj: fetchQueryResultsProps
-): Promise<SearchResults> {
-  const { century, classification, queryString } = searchObj;
+export async function fetchAllCultures(): Promise<Option[]> {
+  if (localStorage.getItem('cultures')) {
+    return JSON.parse(localStorage.getItem('cultures')!);
+  }
 
-  const url = `${BASE_URL}/object?${KEY}&classification=${classification}&century=${century}&keyword=${queryString}`;
+  const url = `${BASE_URL}/culture?${KEY}&size=300&sort=name`;
+
+  const response = await fetch(url);
+  const { records } = await response.json();
+
+  localStorage.setItem('cultures', JSON.stringify(records));
+
+  return records;
+}
+
+export async function fetchQueryResults(
+  searchObj: fetchQueryResultsArgs
+): Promise<SearchResults> {
+  const { century, classification, culture, queryString } = searchObj;
+
+  const url = `${BASE_URL}/object?${KEY}&classification=${classification}&century=${century}&culture=${culture}&keyword=${queryString}`;
 
   const response = await fetch(url);
   const data = await response.json();

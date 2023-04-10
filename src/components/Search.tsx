@@ -3,6 +3,7 @@ import { FormEvent, useEffect, useState } from 'react';
 import {
   fetchAllCenturies,
   fetchAllClassifications,
+  fetchAllCultures,
   fetchQueryResults,
 } from '../api';
 
@@ -15,6 +16,9 @@ const Search = (props: SearchProps) => {
   const [tempResults, setTempResults] = useState<Record[]>([]);
   const [queryString, setQueryString] = useState('');
 
+  const [culture, setCulture] = useState('any');
+  const [cultureList, setCultureList] = useState<Option[]>([]);
+
   const [century, setCentury] = useState('any');
   const [centuryList, setCenturyList] = useState<Option[]>([]);
 
@@ -25,10 +29,12 @@ const Search = (props: SearchProps) => {
     setIsLoading(true);
 
     try {
+      const newCultureList = await fetchAllCultures();
       const newClassificationList = await fetchAllClassifications();
       const newCenturyList = await fetchAllCenturies();
       // console.log(newCenturyList);
       // console.log(newClassificationList);
+      setCultureList(newCultureList);
       setCenturyList(newCenturyList);
       setClassificationList(newClassificationList);
     } catch (error) {
@@ -47,7 +53,7 @@ const Search = (props: SearchProps) => {
     setIsLoading(true);
 
     try {
-      const searchObj = { century, classification, queryString };
+      const searchObj = { century, classification, culture, queryString };
       const result = await fetchQueryResults(searchObj);
       // console.log(newSearchResults);
       setSearchResults(result);
@@ -63,7 +69,7 @@ const Search = (props: SearchProps) => {
     if (!queryString) return setTempResults([]);
 
     try {
-      const searchObj = { century, classification, queryString };
+      const searchObj = { century, classification, culture, queryString };
       const result = await fetchQueryResults(searchObj);
       // console.log(result);
       setTempResults(result.records);
@@ -108,8 +114,29 @@ const Search = (props: SearchProps) => {
         )}
       </fieldset>
       <fieldset>
+        <label htmlFor='select-culture'>
+          Culture
+          <span className='culture-count'>({cultureList.length})</span>
+        </label>
+        <select
+          name='culture'
+          id='select-culture'
+          value={culture}
+          onChange={(event) => {
+            setCulture(event.target.value);
+          }}
+        >
+          <option value='any'>Any</option>
+          {cultureList.map((c) => (
+            <option value={c.name} key={c.id}>
+              {c.name}
+            </option>
+          ))}
+        </select>
+      </fieldset>
+      <fieldset>
         <label htmlFor='select-classification'>
-          Classification{' '}
+          Classification
           <span className='classification-count'>
             ({classificationList.length})
           </span>
@@ -132,7 +159,7 @@ const Search = (props: SearchProps) => {
       </fieldset>
       <fieldset>
         <label htmlFor='select-century'>
-          Century <span className='century-count'>({centuryList.length})</span>
+          Century<span className='century-count'>({centuryList.length})</span>
         </label>
         <select
           name='century'
