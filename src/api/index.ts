@@ -1,12 +1,22 @@
-import {
-  FetchQueryResultsFromTermAndValueArgs,
-  Option,
-  SearchResults,
-  fetchQueryResultsArgs,
-} from '../types/types';
+import { Option, SearchResults, fetchQueryResultsArgs } from '../types/types';
 
 export const BASE_URL = 'https://api.harvardartmuseums.org';
 export const KEY = `apikey=${import.meta.env.VITE_API_KEY}`;
+
+export async function fetchAllCultures(): Promise<Option[]> {
+  if (localStorage.getItem('cultures')) {
+    return JSON.parse(localStorage.getItem('cultures')!);
+  }
+
+  const url = `${BASE_URL}/culture?${KEY}&size=300&sort=name`;
+
+  const response = await fetch(url);
+  const { records } = await response.json();
+
+  localStorage.setItem('cultures', JSON.stringify(records));
+
+  return records;
+}
 
 export async function fetchAllClassifications(): Promise<Option[]> {
   if (localStorage.getItem('classifications')) {
@@ -38,27 +48,12 @@ export async function fetchAllCenturies(): Promise<Option[]> {
   return records;
 }
 
-export async function fetchAllCultures(): Promise<Option[]> {
-  if (localStorage.getItem('cultures')) {
-    return JSON.parse(localStorage.getItem('cultures')!);
-  }
-
-  const url = `${BASE_URL}/culture?${KEY}&size=300&sort=name`;
-
-  const response = await fetch(url);
-  const { records } = await response.json();
-
-  localStorage.setItem('cultures', JSON.stringify(records));
-
-  return records;
-}
-
 export async function fetchQueryResults(
   searchObj: fetchQueryResultsArgs
 ): Promise<SearchResults> {
-  const { century, classification, culture, queryString } = searchObj;
+  const { century, classification, queryString } = searchObj;
 
-  const url = `${BASE_URL}/object?${KEY}&classification=${classification}&century=${century}&culture=${culture}&keyword=${queryString}`;
+  const url = `${BASE_URL}/object?${KEY}&classification=${classification}&century=${century}&keyword=${queryString}`;
 
   const response = await fetch(url);
   const data = await response.json();
@@ -75,10 +70,10 @@ export async function fetchQueryResultsFromURL(
   return data;
 }
 
-export async function fetchQueryResultsFromTermAndValue({
-  term,
-  value,
-}: FetchQueryResultsFromTermAndValueArgs): Promise<SearchResults> {
+export async function fetchQueryResultsFromTermAndValue(
+  term: string,
+  value: string
+): Promise<SearchResults> {
   const response = await fetch(
     `${BASE_URL}/object?${KEY}&${term}=${encodeURI(value.split('-').join('|'))}`
   );

@@ -7,13 +7,10 @@ import {
   fetchQueryResults,
 } from '../api';
 
-import { Option, Record } from '../types/types';
-import { useAppDispatch } from '../app/hooks';
-import { fetchSearch } from '../app/searchResultSlice';
-import { setFeaturedResult } from '../app/featuredResultSlice';
+import { Option, Record, SearchProps } from '../types/types';
 
-const Search = () => {
-  const dispatch = useAppDispatch();
+const Search = (props: SearchProps) => {
+  const { setIsLoading, setSearchResults, setFeaturedResult } = props;
 
   const [isSearching, setIsSearching] = useState(false);
   const [tempResults, setTempResults] = useState<Record[]>([]);
@@ -29,15 +26,21 @@ const Search = () => {
   const [classificationList, setClassificationList] = useState<Option[]>([]);
 
   async function getData() {
+    setIsLoading(true);
+
     try {
       const newCultureList = await fetchAllCultures();
       const newClassificationList = await fetchAllClassifications();
       const newCenturyList = await fetchAllCenturies();
+      // console.log(newCenturyList);
+      // console.log(newClassificationList);
       setCultureList(newCultureList);
       setCenturyList(newCenturyList);
       setClassificationList(newClassificationList);
     } catch (error) {
       console.error(error);
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -47,13 +50,17 @@ const Search = () => {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    setIsLoading(true);
 
     try {
       const searchObj = { century, classification, culture, queryString };
-      dispatch(fetchSearch(searchObj));
+      const result = await fetchQueryResults(searchObj);
+      // console.log(newSearchResults);
+      setSearchResults(result);
     } catch (error) {
       console.error(error);
     } finally {
+      setIsLoading(false);
       setIsSearching(false);
     }
   }
@@ -64,6 +71,7 @@ const Search = () => {
     try {
       const searchObj = { century, classification, culture, queryString };
       const result = await fetchQueryResults(searchObj);
+      // console.log(result);
       setTempResults(result.records);
     } catch (error) {
       console.error(error);
@@ -95,7 +103,7 @@ const Search = () => {
                 key={index}
                 onClick={() => {
                   setQueryString(record.title);
-                  dispatch(setFeaturedResult(record));
+                  setFeaturedResult(record);
                   setIsSearching(false);
                 }}
               >

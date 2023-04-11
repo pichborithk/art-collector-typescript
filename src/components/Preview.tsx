@@ -1,38 +1,51 @@
-import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { fetchPage } from '../app/searchResultSlice';
-import { setFeaturedResult } from '../app/featuredResultSlice';
+import { fetchQueryResultsFromURL } from '../api';
+import { PreviewProps } from '../types/types';
 
-const Preview = () => {
-  const searchResult = useAppSelector((state) => state.searchResult.result);
-  const dispatch = useAppDispatch();
+const Preview = (props: PreviewProps) => {
+  const { searchResults, setIsLoading, setSearchResults, setFeaturedResult } =
+    props;
+
+  async function fetchPage(pageUrl: string): Promise<void> {
+    setIsLoading(true);
+
+    try {
+      const results = await fetchQueryResultsFromURL(pageUrl);
+      // console.log(results);
+      setSearchResults(results);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   return (
     <aside id='preview'>
       <header className='pagination'>
         <button
-          disabled={!searchResult.info.prev && true}
+          disabled={!searchResults.info.prev && true}
           className='previous'
-          onClick={() => dispatch(fetchPage(searchResult.info.prev!))}
+          onClick={() => fetchPage(searchResults.info.prev!)}
         >
           Previous
         </button>
         <button
-          disabled={!searchResult.info.next && true}
+          disabled={!searchResults.info.next && true}
           className='next'
-          onClick={() => dispatch(fetchPage(searchResult.info.next!))}
+          onClick={() => fetchPage(searchResults.info.next!)}
         >
           Next
         </button>
       </header>
       <section className='results'>
-        {searchResult.records.map((record, index) => {
+        {searchResults.records.map((record, index) => {
           return (
             <div
               key={index}
               className='object-preview'
               onClick={(event) => {
                 event.preventDefault();
-                dispatch(setFeaturedResult(record));
+                setFeaturedResult(record);
               }}
             >
               {record.primaryimageurl && (
