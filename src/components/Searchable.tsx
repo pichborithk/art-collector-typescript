@@ -1,27 +1,23 @@
 import { MouseEvent } from 'react';
 
-import { fetchQueryResultsFromTermAndValue } from '../api';
 import { SearchableProps } from '../types/types';
+import { fetchTerm } from '../app/searchResultSlice';
+import { useAppDispatch } from '../app/hooks';
 
 const Searchable = (props: SearchableProps) => {
-  const { setIsLoading, searchTerm, searchValue, setSearchResults } = props;
+  const { searchTerm, searchValue } = props;
+  const dispatch = useAppDispatch();
 
   async function handleSearch(
     event: MouseEvent<HTMLAnchorElement>
   ): Promise<void> {
     event.preventDefault();
-    setIsLoading(true);
 
     try {
-      const result = await fetchQueryResultsFromTermAndValue(
-        searchTerm,
-        searchValue
-      );
-      setSearchResults(result);
+      const searchObj = { term: searchTerm, value: searchValue };
+      dispatch(fetchTerm(searchObj));
     } catch (error) {
       console.error(error);
-    } finally {
-      setIsLoading(false);
     }
   }
 

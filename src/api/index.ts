@@ -1,4 +1,9 @@
-import { Option, SearchResults, fetchQueryResultsArgs } from '../types/types';
+import {
+  FetchQueryResultsFromTermAndValueArgs,
+  Option,
+  SearchResults,
+  fetchQueryResultsArgs,
+} from '../types/types';
 
 export const BASE_URL = 'https://api.harvardartmuseums.org';
 export const KEY = `apikey=${import.meta.env.VITE_API_KEY}`;
@@ -70,10 +75,10 @@ export async function fetchQueryResultsFromURL(
   return data;
 }
 
-export async function fetchQueryResultsFromTermAndValue(
-  term: string,
-  value: string
-): Promise<SearchResults> {
+export async function fetchQueryResultsFromTermAndValue({
+  term,
+  value,
+}: FetchQueryResultsFromTermAndValueArgs): Promise<SearchResults> {
   const response = await fetch(
     `${BASE_URL}/object?${KEY}&${term}=${encodeURI(value.split('-').join('|'))}`
   );
