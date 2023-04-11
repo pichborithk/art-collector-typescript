@@ -1,3 +1,5 @@
+import { Dispatch, SetStateAction } from 'react';
+
 export type SearchResults = {
   info: Info;
   records: Record[];
@@ -42,12 +44,28 @@ export type fetchQueryResultsArgs = {
   culture: string;
 };
 
-export type FetchQueryResultsFromTermAndValueArgs = {
-  term: string;
-  value: string;
+export type SearchProps = {
+  setIsLoading: Dispatch<SetStateAction<boolean>>;
+  setSearchResults: Dispatch<SetStateAction<SearchResults>>;
+  setFeaturedResult: Dispatch<SetStateAction<Record | null>>;
+};
+
+export type PreviewProps = {
+  searchResults: SearchResults;
+  setIsLoading: Dispatch<SetStateAction<boolean>>;
+  setSearchResults: Dispatch<SetStateAction<SearchResults>>;
+  setFeaturedResult: Dispatch<SetStateAction<Record | null>>;
+};
+
+export type FeatureProps = {
+  setIsLoading: Dispatch<SetStateAction<boolean>>;
+  setSearchResults: Dispatch<SetStateAction<SearchResults>>;
+  featuredResult: Record | null;
 };
 
 export type SearchableProps = {
+  setIsLoading: Dispatch<SetStateAction<boolean>>;
+  setSearchResults: Dispatch<SetStateAction<SearchResults>>;
   searchTerm: string;
   searchValue: string;
 };

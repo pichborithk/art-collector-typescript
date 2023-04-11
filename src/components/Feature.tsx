@@ -1,8 +1,8 @@
 import Searchable from './Searchable';
-import { useAppSelector } from '../app/hooks';
+import { FeatureProps } from '../types/types';
 
-const Feature = () => {
-  const featuredResult = useAppSelector((state) => state.featuredResult.record);
+const Feature = (props: FeatureProps) => {
+  const { featuredResult, setIsLoading, setSearchResults } = props;
 
   return (
     <main id='feature'>
@@ -17,11 +17,15 @@ const Feature = () => {
             <Searchable
               searchTerm='culture'
               searchValue={featuredResult.culture}
+              setIsLoading={setIsLoading}
+              setSearchResults={setSearchResults}
             />
             <span className='title'>Medium</span>
             <Searchable
               searchTerm='medium'
               searchValue={featuredResult.medium}
+              setIsLoading={setIsLoading}
+              setSearchResults={setSearchResults}
             />
             <span className='title'>Dimensions</span>
             <span className='content'>{featuredResult.dimensions}</span>
@@ -32,6 +36,8 @@ const Feature = () => {
                   key={index}
                   searchTerm='person'
                   searchValue={person.displayname}
+                  setIsLoading={setIsLoading}
+                  setSearchResults={setSearchResults}
                 />
               ))}
             <span className='title'>Department</span>
