@@ -7,10 +7,13 @@ import {
   fetchQueryResults,
 } from '../api';
 
-import { Option, Record, SearchProps } from '../types/types';
+import { Option, Record } from '../types/types';
+import { useAppDispatch } from '../app/hooks';
+import { fetchSearch } from '../app/searchResultSlice';
+import { setFeaturedResult } from '../app/featuredResultSlice';
 
-const Search = (props: SearchProps) => {
-  const { setIsLoading, setSearchResults, setFeaturedResult } = props;
+const Search = () => {
+  const dispatch = useAppDispatch();
 
   const [isSearching, setIsSearching] = useState(false);
   const [tempResults, setTempResults] = useState<Record[]>([]);
@@ -26,21 +29,15 @@ const Search = (props: SearchProps) => {
   const [classificationList, setClassificationList] = useState<Option[]>([]);
 
   async function getData() {
-    setIsLoading(true);
-
     try {
       const newCultureList = await fetchAllCultures();
       const newClassificationList = await fetchAllClassifications();
       const newCenturyList = await fetchAllCenturies();
-      // console.log(newCenturyList);
-      // console.log(newClassificationList);
       setCultureList(newCultureList);
       setCenturyList(newCenturyList);
       setClassificationList(newClassificationList);
     } catch (error) {
       console.error(error);
-    } finally {
-      setIsLoading(false);
     }
   }
 
@@ -50,17 +47,13 @@ const Search = (props: SearchProps) => {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setIsLoading(true);
 
     try {
       const searchObj = { century, classification, culture, queryString };
-      const result = await fetchQueryResults(searchObj);
-      // console.log(newSearchResults);
-      setSearchResults(result);
+      dispatch(fetchSearch(searchObj));
     } catch (error) {
       console.error(error);
     } finally {
-      setIsLoading(false);
       setIsSearching(false);
     }
   }
@@ -71,7 +64,6 @@ const Search = (props: SearchProps) => {
     try {
       const searchObj = { century, classification, culture, queryString };
       const result = await fetchQueryResults(searchObj);
-      // console.log(result);
       setTempResults(result.records);
     } catch (error) {
       console.error(error);
@@ -103,7 +95,7 @@ const Search = (props: SearchProps) => {
                 key={index}
                 onClick={() => {
                   setQueryString(record.title);
-                  setFeaturedResult(record);
+                  dispatch(setFeaturedResult(record));
                   setIsSearching(false);
                 }}
               >

@@ -1,1 +1,1 @@
-# Art Collector TypeCcript
+# Art Collector TypeScript
